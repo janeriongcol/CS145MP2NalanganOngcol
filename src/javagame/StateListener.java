@@ -1,21 +1,18 @@
 package javagame;
 
-import org.newdawn.slick.*;
-import org.newdawn.slick.state.*;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
-/*
- * Master class that controls everything.
- */
-
-public class MyClient {
-	/*
+class StateManager extends StateBasedGame{
+	
 	public static final String gamename = "Bato Bato Pick and the Lizard Spock in 3D";
 	public static final int menu = 0; //Menu Screen
 	public static final int choose = 1; //Choose Character Screen
 	public static final int play = 2; //Gameplay Screen 
 	public static final int cham = 3; //Cham Cham Cham Screen
 	
-	public MyClient(String gamename) {
+	public StateManager() {
 		super(gamename); //Add title to title bar
 		//Add each state/screen individually
 		this.addState(new Menu(menu));
@@ -32,19 +29,13 @@ public class MyClient {
 		//Show Menu Screen first
 		this.enterState(menu);
 	}
-	*/
-	
-	public static void main(String args[]) {
-		AppGameContainer appgc;
-		try {
-			StateListener state = StateListener.INSTANCE;
-			//Create the window that will hold the game
-			appgc = new AppGameContainer(state.stateManager);
-			appgc.setDisplayMode(500, 500, false); //false for NO FULLSCREEN
-			appgc.start();
-		} catch(SlickException e) {
-			e.printStackTrace();
-		}
-	}
+}
 
+public enum StateListener {
+	INSTANCE;
+	StateManager stateManager;
+	
+	StateListener(){
+		stateManager = new StateManager();
+	}
 }

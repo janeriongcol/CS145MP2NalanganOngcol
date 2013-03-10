@@ -10,11 +10,14 @@ import org.lwjgl.input.*;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
-public class Menu extends BasicGameState{
+public class Menu extends BasicGameState implements ActionListener{
 	
 	Image bg, title, connect;
 	JTextField ipaddFld, portFld;
+	JTextField battleNameFld;
 	String mouse = "";
+	
+	JFrame frame;
 	
 	public Menu(int state) {
 		//ESTABLISH CONNECTION WITH SERVER HERE
@@ -45,15 +48,14 @@ public class Menu extends BasicGameState{
 		//Check if CONNECT is clicked
 		if((xpos > 175 && xpos < 320) && (ypos < 70 && ypos > 40))
 			if(input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-				JFrame frame = new JFrame();
+				frame = new JFrame();
+				JPanel container = new JPanel(new BorderLayout());
+/*
 				JPanel ipaddPnl = new JPanel(new BorderLayout());
 				JPanel portPnl = new JPanel(new BorderLayout());
-				JPanel container = new JPanel(new BorderLayout());
 				
 				ipaddFld = new JTextField(10);
 				portFld = new JTextField(5);
-				
-				JButton ok = new JButton("Connect");
 				
 				JLabel ipaddLbl = new JLabel("Enter STREK's IP Address");
 				JLabel portLbl = new JLabel("Enter STREK's Port Number");
@@ -67,20 +69,43 @@ public class Menu extends BasicGameState{
 				
 				container.add(ipaddPnl, BorderLayout.NORTH);
 				container.add(portPnl, BorderLayout.SOUTH);
+*/				
+
+				JButton ok = new JButton("Connect");
+				ok.addActionListener(this);
+
+				JPanel battleNamePnl = new JPanel(new BorderLayout());
+				JLabel battleNameLbl = new JLabel("Enter your Battle Name*\n" /*+
+						"							this will be used to identify you throughout the server\n" +
+						"							although you're free to leave this blank for the server to assign you a boring generic name)"*/);
+				battleNameFld = new JTextField(20);
+				
+				battleNamePnl.add(battleNameLbl, BorderLayout.NORTH);
+				battleNamePnl.add(battleNameFld, BorderLayout.CENTER);
+				battleNamePnl.add(ok, BorderLayout.AFTER_LAST_LINE);
+				
+				container.add(battleNamePnl, BorderLayout.CENTER);
 				
 				frame.setTitle("Connect To STREK");
 				frame.add(container);
-				frame.setSize(250, 150);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setVisible(true);
-				
-				
+				frame.setSize(600, 100);
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);	
 			}
-		
-		
+			
 	}
 	
 	public int getID() {
 		return 0; //because menu = 0
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		frame.setVisible(false);
+		
+		ClientListener client = ClientListener.INSTANCE;
+		if(!battleNameFld.getText().isEmpty()) client.conn.sendMessage("/changename " + battleNameFld.getText());
+	
+		StateListener state = StateListener.INSTANCE;
+		state.stateManager.enterState(State.choose.getValue());
 	}
 }

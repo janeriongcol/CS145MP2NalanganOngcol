@@ -3,8 +3,10 @@ package javagame;
 import java.awt.BorderLayout;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.*;
 
 public class MyServer extends JFrame{
 	
@@ -34,16 +36,20 @@ public class MyServer extends JFrame{
 	}
 	
 	public void connect() {
-		try {
-			status.append("STREK$ is now online on PORT 8888.\n");
+		try {	
+			status.append("Starting STREK$ server...\n");
 			ServerSocket ssocket = new ServerSocket(8888);
-			for(int player = 1; player <= 2; player++) {
-				status.append("STREK$ is waiting for people to play.\n");
-				Socket socket = ssocket.accept();
-				status.append("STREK$ Player" + player + ": " + /*socket.getInetAddress()*/ "erw"
-						+ " is ready to play.\n");
-				
-				//NETWORKING CODE
+			status.append("STREK$ is waiting for people to play.\n");
+			
+			List<ServerThread> clientConn = new ArrayList<ServerThread>();
+			Socket socket;
+			ServerThread st;
+			int clientNum = 1;
+			
+			while(true) {
+				socket = ssocket.accept();
+				st = new ServerThread(status, clientConn, socket, clientNum++);
+				st.start();
 			}
 			
 		} catch (Exception e) {
